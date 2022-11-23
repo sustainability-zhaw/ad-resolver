@@ -1,0 +1,69 @@
+
+type Sdg {
+    id: String! @id @search(by: [exact])
+    objects: [InfoObject] @hasInverse(field: sdgs) 
+}
+
+type Department {
+    id: String! @id @search(by: [exact])
+    objects: [InfoObject] @hasInverse(field: departments) 
+    persons: [Person] @hasInverse(field: department)
+}
+
+type InfoObject @withSubscription {
+    title: String @search(by: [fulltext])
+    persons: [ Person ] 
+    year: Int @search 
+    abstract: String @search(by: [fulltext])
+    language: String
+    link: String! @id @search(by: [exact])
+    extras: String @search(by: [fulltext])
+    sdgs: [ Sdg ] 
+    keywords: [ Keyword ]
+    class: [ PublicationClass ]
+    subtype: InfoObjectType 
+    category: InfoObjectType
+    departments: [Department]
+    dateUpdate: DateTime
+}
+
+type Person @withSubscription {
+    fullname: String! @id @search(by: [term])
+    initials: String @search(by: [exact])
+    surname: String  @search(by: [term])
+    givenname: String
+    displayname: String
+    gender: String
+    title: String
+    mail: String
+    ipphone: String
+    physicaldeliveryofficename: String
+    team: Team
+    directreports: [ Person ] @hasInverse(field: manager)
+    manager: Person @hasInverse(field: directreports)
+    department: Department
+    objects: [ InfoObject ] @hasInverse(field: persons)
+    LDAPDN: String @search(by: [exact])
+    dateUpdate: DateTime
+}
+
+type Team {
+    name: String! @id @search(by: [term])
+    staff: [ Person ] @hasInverse(field: team)
+}
+
+type InfoObjectType { 
+    name: String! @id @search(by: [exact])
+    objects: [ InfoObject ] @hasInverse(field: subtype)
+}
+
+type PublicationClass { 
+    id: String! @id @search
+    name: String @search(by: [term])
+    objects: [ InfoObject ] @hasInverse(field: class)
+}
+
+type Keyword {
+    name: String! @id @search(by: [term])
+    objects: [ InfoObject ] @hasInverse(field: keywords)
+}

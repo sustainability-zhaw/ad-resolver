@@ -1,0 +1,53 @@
+mutation {
+
+    addInfoObjectType(input: [
+        { name: "publications" },
+        { name: "projects" },
+        { name: "modules" }
+    ], upsert: true) {
+        infoObjectType {
+            name
+        }
+    }
+
+    addSdg(input: [
+        { id: "sdg_1" },
+        { id: "sdg_2" },
+        { id: "sdg_3" },
+        { id: "sdg_4" },
+        { id: "sdg_5" },
+        { id: "sdg_6" },
+        { id: "sdg_7" },
+        { id: "sdg_8" },
+        { id: "sdg_9" },
+        { id: "sdg_10" },
+        { id: "sdg_11" },
+        { id: "sdg_12" },
+        { id: "sdg_13" },
+        { id: "sdg_14" },
+        { id: "sdg_15" },
+        { id: "sdg_16" },
+        { id: "sdg_17" } 
+    ], upsert: true) {
+        sdg {
+            id
+        }
+    }
+
+    addDepartment(input: [
+        { id: "department_A" },
+        { id: "department_G" },
+        { id: "department_L" },
+        { id: "department_N" },
+        { id: "department_P" },
+        { id: "department_S" },
+        { id: "department_T" },
+        { id: "department_W" },
+        { id: "department_R" },
+        { id: "department_V" }
+    ], upsert: true) {
+        department { 
+            id
+        }
+    }
+}
