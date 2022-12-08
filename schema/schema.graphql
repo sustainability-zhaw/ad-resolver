@@ -39,12 +39,13 @@ type Person @withSubscription {
     ipphone: String
     physicaldeliveryofficename: String
     team: Team
-    directreports: [ Person ] @hasInverse(field: manager)
-    manager: Person @hasInverse(field: directreports)
+    directreports: [ LdapDN ]
+    manager: LdapDN
     department: Department
     objects: [ InfoObject ] @hasInverse(field: persons)
-    LDAPDN: String @search(by: [exact])
+    ldapDN: LdapDN @hasInverse(field: person)
     dateUpdate: DateTime
+    ldapChecked: Boolean @search
 }
 
 type Team {
@@ -66,4 +67,9 @@ type PublicationClass {
 type Keyword {
     name: String! @id @search(by: [term])
     objects: [ InfoObject ] @hasInverse(field: keywords)
+}
+
+type LdapDN {
+    dn: String! @id @search(by: [exact])
+    person: Person @hasInverse(field: ldapDN)
 }

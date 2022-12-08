@@ -3,6 +3,7 @@ services:
   app:
     build:
       context: ./app
+    restart: 'no'
     env_file:
       - ./.env
     command: tail -f /dev/null
@@ -20,12 +21,13 @@ services:
   db_init:
     image: ghcr.io/sustainability-zhaw/dgraph-schema:sha-d2daeec
     restart: 'no'
-    # volumes:
-    #   - ./dgraph-schema/schema:/data/schema:ro
+    volumes:
+      - ./schema:/data/schema
     profiles:
       - tools
 
   db_browser:
     image: dgraph/ratel:v21.12.0
+    restart: 'no'
     ports:
       - '8000:8000'

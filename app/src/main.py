@@ -8,7 +8,7 @@ from ldap3 import Server, Connection, SAFE_SYNC
 import settings
 
 
-logging.basicConfig(level=settings.LOG_LEVEL, handlers=[logging.StreamHandler(sys.stdout)])
+logging.basicConfig(level=settings.LOG_LEVEL)
 logger = logging.getLogger("ldap_resolver")
 
 logger.debug("Connecting to active directory")
@@ -30,10 +30,9 @@ graphql = Client(
     fetch_schema_from_transport=True
 )
 
-# TODO: Filter by resolve state = unresolved
 logger.debug(f"Querying person batch with size of {settings.BATCH_SIZE}")
 person_batch = graphql.execute(
-    gql("query ($batchSize:Int) { queryPerson(first:$batchSize) { fullname } }"),
+    gql("query ($batchSize:Int) { queryPerson(filter: { ldapChecked: false }, first:$batchSize) { fullname } }"),
     variable_values={"batchSize": settings.BATCH_SIZE}
 )
 
@@ -42,6 +41,10 @@ logger.debug("Processing person batch of size {result_size}".format(result_size=
 for person in person_batch["queryPerson"]:
     logger.debug("Querying active directory for person: {person}".format(person=person))
     lastname, firstname = [str.strip(value) for value in str.split(person["fullname"], ",")]
+
+    # TODO: Generate all search combinations (sn and givenName)
+    # TODO: Execute all search combinations until one matching entry is found
+
     status, result, response, _ = active_directory.search(
         search_base="OU=AUM,DC=zhaw,DC=ch",
         search_filter=f"(&(objectclass=person)(objectclass=user)(objectclass=organizationalPerson)(sn={lastname})(givenName={firstname}))",
@@ -49,17 +52,19 @@ for person in person_batch["queryPerson"]:
         size_limit=2,
     )
 
-    # TODO: Mark as processed and (resolved or unresolved)
     person_update = {
         "filter": { "fullname": {"eq": person["fullname"]}},
-        "set": { 'dateUpdate': datetime.datetime.now(datetime.timezone.utc).isoformat() }
+        "set": { 
+            'dateUpdate': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'ldapChecked': True
+        }
     }
 
     if not status:
-        logging.warning("No matching AD entries found for person: {person}".format(person=person))
+        logging.info("Failed AD search for person: {person}".format(person=person))
         continue
     elif len(response) != 1:
-        logging.warning("{match_size} matching AD entries found for Person: {person}".format(person=person, match_size=len(response)))
+        logging.info("Multiple AD entries found for Person: {person}".format(person=person))
         continue
     else:
         ldap_to_field_map = {
@@ -72,8 +77,10 @@ for person in person_batch["queryPerson"]:
             "mail": ("mail", lambda attributes: attributes["mail"]),
             "ipphone": ("ipphone", lambda attributes: attributes["ipphone"]),
             "physicaldeliveryofficename": ("physicaldeliveryofficename", lambda attributes: attributes["physicaldeliveryofficename"]),
-            "department": ("department", lambda attributes: { "id": attributes["department"] }),
-            "distinguishedname": ("LDAPDN", lambda attributes: attributes["distinguishedname"])
+            "department": ("department", lambda attributes: { "id": 'department_' + attributes["department"] }),
+            "distinguishedname": ("ldapDN", lambda attributes: { "dn": attributes["distinguishedname"] }),
+            "manager": ("manager", lambda attributes: { "dn": attributes["manager"] }),
+            "directreports": ("directreports", lambda attributes: [{ "dn": dn } for dn in attributes["directreports"].values]),
         }
 
         for attribute_name in ldap_to_field_map:
