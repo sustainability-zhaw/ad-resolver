@@ -50,4 +50,68 @@ mutation {
             id
         }
     }
+
+    addPerson(input:[
+        { fullname: "Karakas, Esra", ldapChecked: false },
+        { fullname: "Meyer, Luca", ldapChecked: false },
+        { fullname: "Stohner, Jürgen", ldapChecked: false },
+        { fullname: "Dia, Nay C.", ldapChecked: false },
+        { fullname: "Morinière, Lucas", ldapChecked: false },
+        { fullname: "Cottyn, Bart", ldapChecked: false },
+        { fullname: "Bernal, Eduardo", ldapChecked: false },
+        { fullname: "Jacobs, Jonathan M.", ldapChecked: false },
+        { fullname: "Koebnik, Ralf", ldapChecked: false },
+        { fullname: "Osdaghi, Ebrahim", ldapChecked: false },
+        { fullname: "Potnis, Neha", ldapChecked: false },
+        { fullname: "Pothier, Joël F.", ldapChecked: false },
+        { fullname: "Bokusheva, Raushan", ldapChecked: false },
+        { fullname: "Bozzola, Martina", ldapChecked: false },
+        { fullname: "Kunze, Sven", ldapChecked: false },
+        { fullname: "Tribelhorn, Roman", ldapChecked: false },
+        { fullname: "Loh Joey, Krystal", ldapChecked: false },
+        { fullname: "Mousavi, Sara", ldapChecked: false },
+        { fullname: "Filipová, Lucie", ldapChecked: false },
+        { fullname: "Ebert, Jürgen", ldapChecked: false },
+        { fullname: "Heiligtag, Florian Johannes", ldapChecked: false },
+        { fullname: "Daumke, Ralph", ldapChecked: false },
+        { fullname: "Loser, Werner", ldapChecked: false },
+        { fullname: "Ledergerber, Bettina", ldapChecked: false },
+        { fullname: "Frank, Brian", ldapChecked: false },
+        { fullname: "Adlhart, Christian", ldapChecked: false },
+        { fullname: "Baumann, Mirja", ldapChecked: false },
+        { fullname: "Brander, Sarah", ldapChecked: false },
+        { fullname: "Osechas, Okuary", ldapChecked: false },
+        { fullname: "Felux, Michael", ldapChecked: false },
+        { fullname: "Fohlmeister, Friederike", ldapChecked: false },
+        { fullname: "Dautermann, Thomas", ldapChecked: false },
+        { fullname: "Boogen, Nina", ldapChecked: false },
+        { fullname: "Filippini, Massimo", ldapChecked: false },
+        { fullname: "Martinez-Cruz, Adan L.", ldapChecked: false },
+        { fullname: "Senn, Smeralda", ldapChecked: false },
+        { fullname: "Volken, Thomas", ldapChecked: false },
+        { fullname: "Rösner, Susanne", ldapChecked: false },
+        { fullname: "Wieber, Frank", ldapChecked: false },
+        { fullname: "Pehlke-Milde, Jessica", ldapChecked: false },
+        { fullname: "Radu, Irina", ldapChecked: false },
+        { fullname: "Meyer, Yvonne", ldapChecked: false },
+        { fullname: "Gouilhers, Solène", ldapChecked: false },
+        { fullname: "Hammer, Raphaël", ldapChecked: false },
+        { fullname: "Zysset, Annina", ldapChecked: false },
+        { fullname: "Amendola, Simone", ldapChecked: false },
+        { fullname: "von Wyl, Agnes", ldapChecked: false },
+        { fullname: "Dratva, Julia", ldapChecked: false },
+        { fullname: "Bachmann, Oliver", ldapChecked: false },
+        { fullname: "Gründler, Klaus", ldapChecked: false },
+        { fullname: "Morales, Jonas", ldapChecked: false },
+        { fullname: "Potrafke, Niklas", ldapChecked: false },
+        { fullname: "Seiberlich, Ruben", ldapChecked: false },
+        { fullname: "Petrik, Andreas", ldapChecked: false },
+        { fullname: "Föhn, Martina", ldapChecked: false },
+        { fullname: "Nydegger, Vera", ldapChecked: false },
+        { fullname: "Marcone, Roberto Davide", ldapChecked: false }
+     ], upsert: true) {
+        person { 
+            fullname
+        }
+    }
 }
