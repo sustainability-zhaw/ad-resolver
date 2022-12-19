@@ -1,4 +1,3 @@
-
 type Sdg {
     id: String! @id @search(by: [exact])
     objects: [InfoObject] @hasInverse(field: sdgs) 
@@ -13,22 +12,23 @@ type Department {
 type InfoObject @withSubscription {
     title: String @search(by: [fulltext])
     persons: [ Person ] 
+    authors: [ Author ]
     year: Int @search 
     abstract: String @search(by: [fulltext])
     language: String
     link: String! @id @search(by: [exact])
     extras: String @search(by: [fulltext])
-    sdgs: [ Sdg ] 
+    sdgs: [ Sdg ] @hasInverse(field: objects) 
     keywords: [ Keyword ]
     class: [ PublicationClass ]
-    subtype: InfoObjectType 
-    category: InfoObjectType
-    departments: [Department]
+    category: InfoObjectType @hasInverse(field: objects)
+    subtype: InfoObjectSubType @hasInverse(field: objects)
+    departments: [Department] @hasInverse(field: objects)
     dateUpdate: DateTime
 }
 
 type Person @withSubscription {
-    fullname: String! @id @search(by: [term])
+    fullname: String @search(by: [term])
     initials: String @search(by: [exact])
     surname: String  @search(by: [term])
     givenname: String
@@ -39,22 +39,35 @@ type Person @withSubscription {
     ipphone: String
     physicaldeliveryofficename: String
     team: Team
-    directreports: [ LdapDN ]
-    manager: LdapDN
+    directreports: [ Person ] @hasInverse(field: manager)
+    manager: Person @hasInverse(field: directreports)
     department: Department
     objects: [ InfoObject ] @hasInverse(field: persons)
-    ldapDN: LdapDN @hasInverse(field: person)
-    dateUpdate: DateTime
-    ldapChecked: Boolean @search
+    pseudonyms: [ Author ]
+    LDAPDN: String! @id @search(by: [exact])
+    retired: Int @search
+    ad_check: Int @search 
 }
 
 type Team {
-    name: String! @id @search(by: [term])
-    staff: [ Person ] @hasInverse(field: team)
+    LDAPDN: String! @id @search(by: [term]) 
+    person: [Person] @hasInverse(field: team)
+    ad_check: Int @search
+}
+
+type Author @withSubscription {
+    fullname: String! @id @search(by: [term]) 
+    person: Person @hasInverse(field: pseudonyms)
+    ad_check: Int @search
 }
 
 type InfoObjectType { 
-    name: String! @id @search(by: [exact])
+    name: String! @id @search(by: [term])
+    objects: [ InfoObject ] @hasInverse(field: category)
+}
+
+type InfoObjectSubType { 
+    name: String! @id @search(by: [term])
     objects: [ InfoObject ] @hasInverse(field: subtype)
 }
 
@@ -67,9 +80,4 @@ type PublicationClass {
 type Keyword {
     name: String! @id @search(by: [term])
     objects: [ InfoObject ] @hasInverse(field: keywords)
-}
-
-type LdapDN {
-    dn: String! @id @search(by: [exact])
-    person: Person @hasInverse(field: ldapDN)
 }
