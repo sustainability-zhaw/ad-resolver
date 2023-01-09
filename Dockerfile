@@ -1,4 +1,4 @@
-FROM python:3.9.15-slim-bullseye
+FROM python:3.11.1-slim-bullseye
 
 ENV AD_HOST=
 ENV AD_USER=
@@ -9,7 +9,7 @@ ENV BATCH_INTERVAL=
 ENV LOG_LEVEL=
 
 COPY requirements.txt /requirements.txt
-COPY src/ /app/
+COPY app/src/ /app/
 
 RUN pip install -r requirements.txt && \
     rm requirements.txt && \
