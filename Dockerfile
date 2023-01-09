@@ -8,7 +8,7 @@ ENV BATCH_SIZE=
 ENV BATCH_INTERVAL=
 ENV LOG_LEVEL=
 
-COPY requirements.txt /requirements.txt
+COPY app/requirements.txt /requirements.txt
 COPY app/src/ /app/
 
 RUN pip install -r requirements.txt && \
