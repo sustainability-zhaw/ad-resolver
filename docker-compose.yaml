@@ -14,7 +14,7 @@ services:
       - ./app/src:/app
 
   db:
-    hostname: dgraph_standalone # Hardcoded in db_init entrypoint.sh
+    hostname: dgraph_standalone 
     image: dgraph/standalone:v22.0.2
     restart: 'no'
     ports:
@@ -24,8 +24,9 @@ services:
   db_init:
     image: ghcr.io/sustainability-zhaw/dgraph-schema:sha-d2daeec
     restart: 'no'
-    volumes:
-      - ./schema:/data/schema
+    environment:
+      DGRAPH_SERVER: http://dgraph_standalone:8080
+      SAMPLE_DATA: plain_pubs
     profiles:
       - tools
 
