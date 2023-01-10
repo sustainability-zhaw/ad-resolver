@@ -35,7 +35,7 @@ A special case is given when person change their surnames at marriage. This is p
 
 ### Deploy on Docker
 
-```docker
+```yaml
 version: "3.8"
 services:
   resolver:
