@@ -2,17 +2,20 @@ version: "3.8"
 services:
   app:
     build:
-      context: ./app
+      context: ./
     restart: 'no'
+    environment:
+      DB_HOST: dgraph_standalone:8080
     env_file:
       - ./.env
+    # the following uses 
     command: tail -f /dev/null
     volumes:
       - ./app/src:/app
 
   db:
     hostname: dgraph_standalone # Hardcoded in db_init entrypoint.sh
-    image: dgraph/standalone:v22.0.1
+    image: dgraph/standalone:v22.0.2
     restart: 'no'
     ports:
       - '8080:8080'
