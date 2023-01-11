@@ -84,4 +84,4 @@ The main service configuration is set via environment variables.
 - `DB_HOST` - host or IP of the graphQL endpoint
 - `BATCH_SIZE` - maximum number of records to handle in one go, default is `100`
 - `BATCH_INTERVAL` - Timeout between batches, default is `180`
-- `LOG_LEVEL` - log level for tracing and debugging, default is `DEBUG`
+- `LOG_LEVEL` - log level for tracing and debugging, default is `ERROR`
