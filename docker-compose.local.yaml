@@ -23,7 +23,7 @@ services:
       - '9080:9080'
 
   db_init:
-    image: ghcr.io/sustainability-zhaw/dgraph-schema:sha-9cd03f9
+    image: ghcr.io/sustainability-zhaw/dgraph-schema:sha-64d6b71
     restart: 'no'
     environment:
       DGRAPH_SERVER: http://dgraph_standalone:8080
