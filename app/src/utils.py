@@ -21,7 +21,7 @@ def build_full_name_variations(full_name):
 
     nameparts = [value.strip() for value in full_name.split(',')]
 
-    if nameparts.length != 2: 
+    if len(nameparts) != 2: 
         return;
 
     surname, given_name = nameparts
