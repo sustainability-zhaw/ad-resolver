@@ -19,7 +19,12 @@ def build_full_name_variations(full_name):
 
         return variations
 
-    surname, given_name = [value.strip() for value in full_name.split(',')]
+    nameparts = [value.strip() for value in full_name.split(',')]
+
+    if nameparts.length != 2: 
+        return;
+
+    surname, given_name = nameparts
     
     full_name_variations = list(itertools.product(
         [surname] + build_variations(surname),
