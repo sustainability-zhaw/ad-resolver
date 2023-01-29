@@ -1,13 +1,13 @@
 import json
 import os
 
-
 if os.path.exists('/etc/app/secrets.json'):
     with open('/etc/app/secrets.json') as secrets_file:
-        secrets = json.load(secrets_file)
-        for key in ['ad_user', 'ad_pass']:
-            if key in secrets and secrets[key] is not None:
-                os.environ[str.upper(key)] = secrets[key]
+        config = json.load(secrets_file)
+        params = ['ad_user', 'ad_pass', 'db_host', 'log_level', 'batch_size', 'batch_interval']
+        for key in params:
+            if key in config and config[key] is not None:
+                os.environ[str.upper(key)] = config[key]
 
 AD_HOST = os.getenv('AD_HOST', 'zhaw.ch')
 AD_USER = os.getenv('AD_USER')
