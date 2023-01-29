@@ -42,7 +42,7 @@ def build_full_name_variations(full_name):
 
 ldap_to_field_map = {
     "initials": ("initials", lambda attributes: attributes["initials"]),
-    "surname": ("surname", lambda attributes: attributes["surname"]),
+    "sn": ("surname", lambda attributes: attributes["sn"]),
     "givenname": ("givenname", lambda attributes: attributes["givenname"]),
     "displayName": ("displayname", lambda attributes: attributes["displayName"]),
     "extensionattribute3": ("gender", lambda attributes: attributes["extensionattribute3"]),
