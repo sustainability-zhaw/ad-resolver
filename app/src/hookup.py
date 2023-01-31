@@ -15,7 +15,7 @@ def run():
         ldap.connect()
 
     logger.debug(f"Querying next unchecked author batch of size {settings.BATCH_SIZE}")
-    for author in db.queryUncheckedAuthorBatch():
+    for author in db.query_unchecked_author_batch():
         logger.debug(f"Processing author: {author}")
         person_update = None
 
@@ -43,12 +43,12 @@ def run():
             author_update["person"] = { "LDAPDN": person_update["LDAPDN"] }
         
         logger.debug(f"Updating author: {author_update}")
-        result = db.updateAuthor(author["fullname"], author_update)
+        result = db.update_author(author["fullname"], author_update)
 
         if person_update:
             person_update["ad_check"] = update_time
             person_ldapdn = person_update["LDAPDN"]
             logger.debug(f"Updating person: {person_update}")
             del person_update["LDAPDN"]
-            # This relys on updateAuthor() creating non existing person objects.
-            db.updatePerson(person_ldapdn, person_update)
+            # This relys on update_author() creating non existing person objects.
+            db.update_person(person_ldapdn, person_update)

@@ -9,7 +9,7 @@ _client = Client(
 )
 
 
-def queryUncheckedAuthorBatch():
+def query_unchecked_author_batch():
     return _client.execute(
         gql(
             """
@@ -30,7 +30,7 @@ def queryUncheckedAuthorBatch():
     )['queryAuthor']
 
 
-def updateAuthor(fullname, input):
+def update_author(fullname, input):
     _client.execute(
         gql(
             """
@@ -50,7 +50,7 @@ def updateAuthor(fullname, input):
     )
 
 
-def updatePerson(ldapdn, input):
+def update_person(ldapdn, input):
     _client.execute(
         gql(
             """
