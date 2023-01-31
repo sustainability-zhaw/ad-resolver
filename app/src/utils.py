@@ -1,11 +1,24 @@
 import itertools
 
 
+def clean_words(words):
+    cleaned_words = []
+
+    for word in words:
+        if word.endswith('.'):
+            continue    
+        for char in ['(', ')']:
+            word = word.replace(char, '')
+        cleaned_words.append(word)
+
+    return cleaned_words
+
+
 def build_full_name_variations(full_name):
     def build_variations(value):
         variations = []
         initial_words = [word for word in value.split(' ')]
-        cleaned_words = [word for word in initial_words if not word.endswith('.')]
+        cleaned_words = clean_words(initial_words)
 
         for word in cleaned_words:
             if '-' in word:
