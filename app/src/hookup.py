@@ -29,7 +29,7 @@ def run():
                     person_update = { "LDAPDN": author["person"]["LDAPDN"], "retired": 1 }
         else:
             for surname, given_name in utils.build_full_name_variations(author["fullname"]):
-                logger.debug("Searching active directory for person with sn {surname} and givenName {given_name}")
+                logger.debug(f"Searching active directory for person with sn {surname} and givenName {given_name}")
                 status, result, response = ldap.find_person_by_surename_and_given_name(surname, given_name)
                 if len(response):
                     # TODO: Decide what to do if more than 1 match is returned.
