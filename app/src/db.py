@@ -2,8 +2,8 @@ from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 import settings
 
-import logging
-logger = logging.getLogger("ad_resolver")
+# import logging
+# logger = logging.getLogger("ad_resolver")
 
 _client = Client(
     transport=RequestsHTTPTransport(url=f"http://{settings.DB_HOST}/graphql"),

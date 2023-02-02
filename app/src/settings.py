@@ -6,8 +6,8 @@ _settings = {
     "AD_HOST": os.getenv('AD_HOST', 'zhaw.ch'),
     "AD_USER": os.getenv('AD_USER'),
     "AD_PASS": os.getenv('AD_PASS'),
-    "BATCH_SIZE": int(os.getenv('BATCH_SIZE', 2592000)),
-    "BATCH_INTERVAL": int(os.getenv('OAI_REQUEST_INTERVAL', 180)),
+    "BATCH_SIZE": int(os.getenv('BATCH_SIZE', 100)),
+    "BATCH_INTERVAL": int(os.getenv('BATCH_INTERVAL', 180)),
     "LOG_LEVEL": os.getenv('LOG_LEVEL', ' DEBUG')
 }
 
