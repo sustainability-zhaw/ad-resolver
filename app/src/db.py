@@ -31,7 +31,7 @@ def query_unchecked_author_batch():
 
 
 def update_author(fullname, input):
-    _client.execute(
+    result = _client.execute(
         gql(
             """
             mutation updateAuthor($authorUpdate: UpdateAuthorInput!){ 
@@ -56,6 +56,35 @@ def update_author(fullname, input):
             }
         }
     )
+
+    if result["author"]:
+        input2 = {
+            "objects": { 
+                "departments" : [{
+                    "id": result["author"]["person"]["department"]["id"]
+                }]
+            }
+        }
+
+        _client.execute(
+            gql(
+                """
+                mutation updateAuthor($authorUpdate: UpdateAuthorInput!){ 
+                    updateAuthor(input: $authorUpdate) {
+                        author { 
+                            fullname 
+                        }
+                    } 
+                }
+                """
+            ),
+            variable_values={
+                "authorUpdate": {
+                    "filter": { "fullname": { "eq": fullname } },
+                    "set": input2
+                }
+            }
+        )
 
 
 def update_person(ldapdn, input):
