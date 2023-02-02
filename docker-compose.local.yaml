@@ -6,18 +6,30 @@ services:
     restart: 'no'
     networks:
       - dgraphnet
-    environment:
-      DB_HOST: db:8080
-      LOG_LEVEL: DEBUG
+    # environment:
+      # DB_HOST: db:8080
+      # LOG_LEVEL: DEBUG
     depends_on:
       db_init:
         condition: service_completed_successfully
     user: root # For attaching VSCode
     env_file:
       - ./.env
-    command: tail -f /dev/null
-    volumes:
-      - ./app/src:/app
+    # command: tail -f /dev/null
+    # volumes:
+    #   - ./app/src:/app
+
+  dspacer: 
+    image: ghcr.io/sustainability-zhaw/extraction-dspace:sha-cbf453e
+    restart: "no"
+    networks:
+      - dgraphnet
+    depends_on:
+      db_init:
+        condition: service_completed_successfully 
+    configs:
+      - source: dcconfig
+        target: /etc/app/config.json
 
   db:
     image: dgraph/standalone:v22.0.2
@@ -33,7 +45,11 @@ services:
     environment:
       TIMEOUT: 25
       DGRAPH_SERVER: http://db:8080
-      SAMPLE_DATA: plain_pubs
+      # SAMPLE_DATA: plain_pubs
 
 networks:
   dgraphnet:
+
+configs:
+  dcconfig:
+    file: ./contrib/digital_collection.json
