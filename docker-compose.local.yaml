@@ -20,7 +20,7 @@ services:
     #   - ./app/src:/app
 
   dspacer: 
-    image: ghcr.io/sustainability-zhaw/extraction-dspace:sha-cbf453e
+    image: ghcr.io/sustainability-zhaw/extraction-dspace:sha-e48a854
     restart: "no"
     networks:
       - dgraphnet

@@ -5,9 +5,7 @@ import ldap
 import settings
 import utils
 
-
 logger = logging.getLogger("ad_resolver")
-
 
 def run():
     if not ldap.connected():
@@ -45,7 +43,7 @@ def run():
                 author_update["person"]   = person_update
                 # author_update["objects"] = { "departments" : [{"id": person_update['department']['id']}]}
             
-            logger.debug(f"Updating author: {author_update}")
+            # logger.debug(f"Updating author: {author_update}")
             result = db.update_author(author["fullname"], author_update)
 
         except:

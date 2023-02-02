@@ -2,6 +2,8 @@ from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 import settings
 
+import logging
+logger = logging.getLogger("ad_resolver")
 
 _client = Client(
     transport=RequestsHTTPTransport(url=f"http://{settings.DB_HOST}/graphql"),
@@ -38,8 +40,7 @@ def update_author(fullname, input):
                 updateAuthor(input: $authorUpdate) {
                     author { 
                         fullname 
-                        person @cascade {
-                            LDAPDN
+                        person {
                             department {
                                 id
                             }
@@ -59,6 +60,8 @@ def update_author(fullname, input):
 
     if not( "author" in result and "person" in result["author"]):
         return
+
+    logger.debug("update author objects")
 
     input2 = {
         "objects": { 
