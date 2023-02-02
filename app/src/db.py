@@ -40,11 +40,6 @@ def update_author(fullname, input):
                 updateAuthor(input: $authorUpdate) {
                     author { 
                         fullname 
-                        person {
-                            department {
-                                id
-                            }
-                        }
                     }
                 } 
             }
@@ -58,38 +53,6 @@ def update_author(fullname, input):
         }
     )
 
-    if not( "author" in result and "person" in result["author"]):
-        return
-
-    logger.debug("update author objects")
-
-    input2 = {
-        "objects": { 
-            "departments" : [{
-                "id": result["author"]["person"]["department"]["id"]
-            }]
-        }
-    }
-
-    _client.execute(
-        gql(
-            """
-            mutation updateAuthor($authorUpdate: UpdateAuthorInput!){ 
-                updateAuthor(input: $authorUpdate) {
-                    author { 
-                        fullname 
-                    }
-                } 
-            }
-            """
-        ),
-        variable_values={
-            "authorUpdate": {
-                "filter": { "fullname": { "eq": fullname } },
-                "set": input2
-            }
-        }
-    )
 
 
 def update_person(ldapdn, input):

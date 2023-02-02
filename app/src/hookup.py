@@ -39,12 +39,18 @@ def run():
             author_update = { "ad_check": update_time }
 
             if person_update:
-                person_update["ad_check"] = update_time
-                author_update["person"]   = person_update
-                # author_update["objects"] = { "departments" : [{"id": person_update['department']['id']}]}
-            
-            # logger.debug(f"Updating author: {author_update}")
+                author_update["person"] = { "LDAPDN": person_update["LDAPDN"] }
+
+            logger.debug(f"Updating author: {author_update}")
             result = db.update_author(author["fullname"], author_update)
+
+            if person_update:
+                person_update["ad_check"] = update_time
+                person_ldapdn = person_update["LDAPDN"]
+                logger.debug(f"Updating person: {person_update}")
+                del person_update["LDAPDN"]
+                # This relys on update_author() creating non existing person objects.
+                db.update_person(person_ldapdn, person_update)
 
         except:
             logger.exception(f'Failed to process author: {author}')
