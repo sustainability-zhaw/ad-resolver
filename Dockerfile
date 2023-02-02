@@ -9,15 +9,17 @@ ENV BATCH_INTERVAL=180
 ENV LOG_LEVEL=ERROR
 
 COPY app/requirements.txt /requirements.txt
-COPY app/src/ /app/
 
-RUN pip install -r requirements.txt && \
-    rm requirements.txt && \
+WORKDIR /app
+
+RUN pip install -r /requirements.txt && \
+    rm /requirements.txt && \
     groupadd -r app && \
     useradd --no-log-init -r -g app app && \
     chmod -R 775 /app
 
-WORKDIR /app
+COPY app/src/ /app/
+
 
 USER app
 
