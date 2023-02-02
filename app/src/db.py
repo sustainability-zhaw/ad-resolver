@@ -38,6 +38,12 @@ def update_author(fullname, input):
                 updateAuthor(input: $authorUpdate) {
                     author { 
                         fullname 
+                        person {
+                            LDAPDN
+                            department {
+                                id
+                            }
+                        }
                     }
                 } 
             }

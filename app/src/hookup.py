@@ -43,7 +43,7 @@ def run():
             if person_update:
                 person_update["ad_check"] = update_time
                 author_update["person"]   = person_update
-                author_update["objects"] = { "departments" : [{"id": person_update['department']['id']}]}
+                # author_update["objects"] = { "departments" : [{"id": person_update['department']['id']}]}
             
             logger.debug(f"Updating author: {author_update}")
             result = db.update_author(author["fullname"], author_update)
