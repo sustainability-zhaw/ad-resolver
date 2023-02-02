@@ -50,4 +50,4 @@ def run():
 
         except:
             logger.exception(f'Failed to process author: {author}')
-        break
+        # break
