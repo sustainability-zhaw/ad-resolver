@@ -4,11 +4,12 @@ import os
 _settings = {
     "DB_HOST": os.getenv('DB_HOST', 'http://localhost:8080'),
     "AD_HOST": os.getenv('AD_HOST', 'zhaw.ch'),
+    "AD_USER": os.getenv('AD_USER'),
+    "AD_PASS": os.getenv('AD_PASS'),
     "BATCH_SIZE": int(os.getenv('BATCH_SIZE', 2592000)),
     "BATCH_INTERVAL": int(os.getenv('OAI_REQUEST_INTERVAL', 180)),
     "LOG_LEVEL": os.getenv('LOG_LEVEL', ' DEBUG')
 }
-
 
 if os.path.exists('/etc/app/secrets.json'):
     with open('/etc/app/secrets.json') as secrets_file:

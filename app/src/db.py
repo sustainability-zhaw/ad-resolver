@@ -36,7 +36,9 @@ def update_author(fullname, input):
             """
             mutation updateAuthor($authorUpdate: UpdateAuthorInput!){ 
                 updateAuthor(input: $authorUpdate) {
-                    author { fullname }
+                    author { 
+                        fullname 
+                    }
                 } 
             }
             """
