@@ -20,7 +20,6 @@ RUN pip install -r /requirements.txt && \
 
 COPY app/src/ /app/
 
-
 USER app
 
 CMD [ "python", "main.py" ]
