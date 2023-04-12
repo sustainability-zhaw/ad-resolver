@@ -32,6 +32,29 @@ def query_unchecked_author_batch():
     )['queryAuthor']
 
 
+def query_author_by_fullname(fullname):
+   result = _client.execute(
+        gql(
+            """
+            query($fullname:String!) {
+                getAuthor(fullname: $fullname) { 
+                    fullname 
+                    ad_check 
+                    person { 
+                        LDAPDN
+                        retired
+                        ad_check
+                    }
+                } 
+            }
+            """
+        ),
+        variable_values={"fullname": fullname}
+    )['getAuthor']
+   
+   return result
+
+
 def update_author(fullname, input):
     result = _client.execute(
         gql(
