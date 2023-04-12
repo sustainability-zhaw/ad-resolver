@@ -2,7 +2,7 @@ import json
 import os
 
 _settings = {
-    "DB_HOST": os.getenv('DB_HOST', 'http://localhost:8080'),
+    "DB_HOST": os.getenv('DB_HOST', 'localhost:8080'),
     "AD_HOST": os.getenv('AD_HOST', 'zhaw.ch'),
     "AD_USER": os.getenv('AD_USER'),
     "AD_PASS": os.getenv('AD_PASS'),
