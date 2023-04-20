@@ -2,8 +2,6 @@ from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 import settings
 
-# import logging
-# logger = logging.getLogger("ad_resolver")
 
 _client = Client(
     transport=RequestsHTTPTransport(url=f"http://{settings.DB_HOST}/graphql"),
@@ -11,86 +9,68 @@ _client = Client(
 )
 
 
-def query_unchecked_author_batch():
-    return _client.execute(
-        gql(
-            """
-            query ($batchSize:Int) { 
-                queryAuthor(filter: { ad_check: { eq: null } }, first:$batchSize) { 
-                    fullname 
-                    ad_check 
-                    person { 
-                        LDAPDN
-                        retired
-                        ad_check
-                    }
-                } 
-            }
-            """
-        ),
-        variable_values={"batchSize": settings.BATCH_SIZE}
-    )['queryAuthor']
-
-
-def query_author_by_fullname(fullname):
-   result = _client.execute(
-        gql(
-            """
-            query($fullname:String!) {
-                getAuthor(fullname: $fullname) { 
-                    fullname 
-                    ad_check 
-                    person { 
-                        LDAPDN
-                        retired
-                        ad_check
-                    }
-                } 
-            }
-            """
-        ),
-        variable_values={"fullname": fullname}
-    )['getAuthor']
-   
-   return result
-
-
-def update_author(fullname, input):
+def query_authors_by_info_object_link(link):
     result = _client.execute(
         gql(
             """
-            mutation updateAuthor($authorUpdate: UpdateAuthorInput!){ 
-                updateAuthor(input: $authorUpdate) {
-                    author { 
-                        fullname 
+            query($link: String!) {
+                getInfoObject(link: $link) {
+                    authors {
+                        fullname
+                        ad_check
+                        person {
+                            LDAPDN
+                            retired
+                            ad_check
+                        }
                     }
                 } 
+            }
+            """
+        ),
+        variable_values={"link": link}
+    )["getInfoObject"]
+    return result["authors"] if result else []
+
+
+def update_author(author):
+    data = author.copy()
+    del data["fullname"]
+    _client.execute(
+        gql(
+            """
+            mutation updateAuthor($patch: UpdateAuthorInput!) {
+                updateAuthor(input: $patch) {
+                    author {
+                        fullname
+                    }
+                }
             }
             """
         ),
         variable_values={
-            "authorUpdate": {
-                "filter": { "fullname": { "eq": fullname } },
-                "set": input
+            "patch": {
+                "filter": { "fullname": { "eq": author["fullname"] } },
+                "set": data
             }
         }
     )
 
 
-
-def update_person(ldapdn, input):
+def upsert_person(person):
     _client.execute(
         gql(
             """
-            mutation updatePerson($personUpdate: UpdatePersonInput!){ 
-                updatePerson(input: $personUpdate) {
-                    person { LDAPDN }
+            mutation ($person: [AddPersonInput!]!) {
+                addPerson(input: $person, upsert: true) {
+                    person { 
+                        LDAPDN
+                    }
                 }
             }
             """
         ),
-        variable_values={"personUpdate": {
-            "filter": { "LDAPDN": { "eq": ldapdn } },
-            "set": input
-        }}
+        variable_values={
+            "person": [person]
+        }
     )

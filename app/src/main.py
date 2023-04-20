@@ -13,8 +13,12 @@ def consume_handler(ch, method, properties, body):
     This function handles the synchroneous message handling and informs the MQ once a 
     message has been successfully handled. 
     """
-    hookup.run(method.routing_key, json.loads(body))
+    resolved_any_author = hookup.run(method.routing_key, json.loads(body))
     ch.basic_ack(method.delivery_tag)
+    
+    if resolved_any_author:
+        ch.basic_publish(exchange=settings.MQ_EXCHANGE, routing_key="importer.person", body=body)
+
 
 
 def main():
@@ -28,7 +32,7 @@ def main():
 
     channel = connection.channel()
 
-    channel.exchange_declare(exchange=settings.MQ_EXCHANGE, exchange_type='topic')
+    channel.exchange_declare(exchange=settings.MQ_EXCHANGE, exchange_type="topic")
 
     result = channel.queue_declare(settings.MQ_QUEUE, exclusive=False)
 

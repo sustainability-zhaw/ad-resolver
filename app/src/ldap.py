@@ -34,7 +34,7 @@ def connect():
 @requires_connection
 def find_person_by_surename_and_given_name(surname, given_name):
     global _connection
-    status, result, response, _ = _connection.search(
+    _, _, response, _ = _connection.search(
         search_base="OU=Staff,OU=AUM,DC=zhaw,DC=ch",
         search_filter="(&(objectclass=person)(objectclass=user)(objectclass=organizationalPerson)(sn={})(givenName={}))".format(
             escape_filter_chars(surname),
@@ -43,13 +43,13 @@ def find_person_by_surename_and_given_name(surname, given_name):
         attributes=["*"],
         size_limit=2
     )
-    return status, result, response
+    return response
     
 
 @requires_connection
 def find_person_by_dn(dn):
     global _connection
-    status, result, response, _ = _connection.search(
+    _, _, response, _ = _connection.search(
         search_base="OU=Staff,OU=AUM,DC=zhaw,DC=ch",
         search_filter="(&(objectclass=person)(objectclass=user)(objectclass=organizationalPerson)(distinguishedName={}))".forrmat(
             escape_filter_chars(dn)
@@ -57,4 +57,4 @@ def find_person_by_dn(dn):
         attributes=["*"],
         size_limit=1,
     )
-    return status, result, response
+    return response
