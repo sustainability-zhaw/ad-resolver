@@ -4,8 +4,6 @@ ENV AD_HOST=zhaw.ch
 # ENV AD_USER=
 # ENV AD_PASS=
 # ENV DB_HOST=
-ENV BATCH_SIZE=100
-ENV BATCH_INTERVAL=180
 ENV LOG_LEVEL=ERROR
 
 COPY app/requirements.txt /requirements.txt

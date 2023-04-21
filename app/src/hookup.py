@@ -2,56 +2,60 @@ import datetime
 import logging
 import db
 import ldap
-import settings
 import utils
+
 
 logger = logging.getLogger("ad_resolver")
 
-def run():
-    if not ldap.connected():
-        logger.debug("Connecting to active directory")
-        ldap.connect()
 
-    logger.debug(f"Querying next unchecked author batch of size {settings.BATCH_SIZE}")
-    for author in db.query_unchecked_author_batch():
-        try:
-            logger.debug(f"Processing author: {author}")
-            person_update = None
+def resolve_author(author):
+    author_has_person = author["person"] is not None
+    ad_entry = None
 
-            if author["person"]:
-                if not author["person"]["ad_check"]:
-                    logger.debug(f"Searching active directory for person with dn {author['person']['LDAPDN']}")
-                    status, result, response = ldap.find_person_by_dn(author["person"]["LDAPDN"])
-                    if len(response):
-                        person_update = utils.read_person_values_from_ad_entry(response[0])
-                    else:
-                        person_update = { "LDAPDN": author["person"]["LDAPDN"], "retired": 1 }
-            else:
-                for surname, given_name in utils.build_full_name_variations(author["fullname"]):
-                    logger.debug(f"Searching active directory for person with sn {surname} and givenName {given_name}")
-                    status, result, response = ldap.find_person_by_surename_and_given_name(surname, given_name)
-                    if len(response) == 1:
-                        # if more than 1 match is returned it is impossible to map an author to a person.
-                        person_update = utils.read_person_values_from_ad_entry(response[0])
-                        break
+    if author_has_person:
+        response = ldap.find_person_by_dn(author["person"]["LDAPDN"])
+        ad_entry = response[0] if len(response) else None
+    else:
+        for surname, given_name in utils.build_full_name_variations(author["fullname"]):
+            response = ldap.find_person_by_surename_and_given_name(surname, given_name)
+            ad_entry = response[0] if len(response) == 1 else None
 
-            update_time = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
-            author_update = { "ad_check": update_time }
+    person = {}
 
-            if person_update:
-                author_update["person"] = { "LDAPDN": person_update["LDAPDN"] }
+    if ad_entry:
+        person.update(utils.read_person_values_from_ad_entry(ad_entry))
+        person["retired"] = 0
+    elif not ad_entry and author_has_person:
+        person.update({ "LDAPDN": author["person"]["LDAPDN"], "retired": 1 })
 
-            logger.debug(f"Updating author: {author_update}")
-            result = db.update_author(author["fullname"], author_update)
+    update_time = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+    db.update_author({ "fullname": author["fullname"], "ad_check": update_time })
 
-            if person_update:
-                person_update["ad_check"] = update_time
-                person_ldapdn = person_update["LDAPDN"]
-                logger.debug(f"Updating person: {person_update}")
-                del person_update["LDAPDN"]
-                # This relys on update_author() creating non existing person objects.
-                db.update_person(person_ldapdn, person_update)
+    if person:
+        person.update({ "ad_check": update_time, "pseudonyms": [{"fullname": author["fullname"]}] })
+        db.upsert_person(person)
 
-        except:
-            logger.exception(f'Failed to process author: {author}')
-        # break
+    return bool(person)
+
+
+def resolve_authors(link):
+    has_resolved_any_author = False
+    authors = db.query_authors_by_info_object_link(link)
+    for author in authors:
+        if not author["ad_check"]:
+            try:
+                success = resolve_author(author)
+                has_resolved_any_author = success or has_resolved_any_author
+            except Exception as e:
+                logger.exception(f"Failed to resolve author {author['fullname']}")
+    return has_resolved_any_author
+
+
+def run(routing_key, body):
+    try:
+        if not ldap.connected():
+            ldap.connect()
+        return resolve_authors(body["link"])
+    except:
+        logger.exception('Unhandled exception')
+    return False
