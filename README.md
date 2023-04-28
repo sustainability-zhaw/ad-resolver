@@ -45,8 +45,6 @@ services:
       - servicenet
     environment:
       DB_HOST: ${YOUR_GRAPHQL_ENDPOINT}
-      BATCH_SIZE: ${NUMBER_OF_RECORDS_HANDLED_AT_ONCE}
-      BATCH_INTERVAL: ${TIMEOUT_TO_REDUCE_LOAD_ON_THE_DIRECTORY}
     secrets:
       - source: resolver_config
         target: /etc/app/secrets.json
@@ -82,6 +80,4 @@ The main service configuration is set via environment variables.
 
 - `AD_HOST` - domain, host, or IP of the directory host
 - `DB_HOST` - host or IP of the graphQL endpoint
-- `BATCH_SIZE` - maximum number of records to handle in one go, default is `100`
-- `BATCH_INTERVAL` - Timeout between batches, default is `180`
 - `LOG_LEVEL` - log level for tracing and debugging, default is `ERROR`
