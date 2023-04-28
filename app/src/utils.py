@@ -12,25 +12,32 @@ def build_full_name_variations(full_name: str):
 
     for index, value in enumerate(surname_and_given_name):
         # Matches unicode characters
-        words = re.findall(r'[\w+-]+\b(?!\.)', value) 
+        words = re.findall(r'[\w+-]+\b(?!\.)', value)
+        generated_words = []
+
+        if len(words) > 1:
+            generated_words.append('-'.join(words))
         
         for word in words:
             if '-' in word: 
-                words.extend(word.split('-'))
+                generated_words.extend(word.split('-'))
 
-        # Adding original name part back
+        # Adding original name part at the top
         if value not in words:
-            words = [value] + words 
-        
-        surname_and_given_name_words[index] = words
+            words = [value] + words
+
+        surname_and_given_name_words[index] = words + generated_words
 
     full_name_variations = list(itertools.product(
         surname_and_given_name_words[0],
         surname_and_given_name_words[1]
     ))
 
-    # TODO: Put input value at the top and sort the rest
-    full_name_variations.sort(key=lambda values: len(values[0] + values[1]), reverse=True)
+    # Input stays at the top because it is the most likely to be found in the active directory.
+    full_name_variations[1:] = sorted(
+        full_name_variations[1:], 
+        key=lambda values: len(values[0] + values[1]), reverse=True
+    )
 
     return full_name_variations
 
