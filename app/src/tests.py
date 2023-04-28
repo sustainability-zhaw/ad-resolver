@@ -5,6 +5,8 @@ class TestBuildFullNameVariations(unittest.TestCase):
 
     def test_build_full_name_variations(self):
         full_names_and_expectations = [
+            ('Stohner', []),
+            ('Stohner Jürgen', []),
             ('Stohner, Jürgen', [('Stohner', 'Jürgen')]),
             ('Pothier, Joël F.', [('Pothier', 'Joël F.'), ('Pothier', 'Joël')]),
             ('Pothier, Joël (F.)', [('Pothier', 'Joël (F.)'), ('Pothier', 'Joël')]),
