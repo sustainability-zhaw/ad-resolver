@@ -12,7 +12,8 @@ class TestBuildFullNameVariations(unittest.TestCase):
             ('Pothier, Joël (F.)', [('Pothier', 'Joël (F.)'), ('Pothier', 'Joël')]),
             ('Pehlke-Milde, Jessica', [('Pehlke-Milde', 'Jessica'), ('Pehlke', 'Jessica'), ('Milde', 'Jessica')]),
             ('von Wyl, Agnes', [('von Wyl', 'Agnes'), ('von-Wyl', 'Agnes'), ('von', 'Agnes'), ('Wyl', 'Agnes')]),
-            ('Föhn, Martina', [('Föhn', 'Martina')])
+            ('Föhn, Martina', [('Föhn', 'Martina')]),
+            ('Foo, Bazhong (Frank)', [('Foo', 'Bazhong (Frank)'), ('Foo', 'Bazhong-Frank'), ('Foo', 'Bazhong'), ('Foo', 'Frank')])
         ]
 
         for fullname_and_expectation in full_names_and_expectations:
