@@ -9,7 +9,7 @@ _settings = {
     "LOG_LEVEL": os.getenv("LOG_LEVEL", " DEBUG"),
     "MQ_HOST": "mq",
     "MQ_EXCHANGE": "zhaw-km",
-    "MQ_BINDKEYS": ["importer.oai", "importer.evento", "importer.projects", "importer.object"],
+    "MQ_BINDKEYS": ["importer.object"],
     "MQ_HEARTBEAT": 6000,
     "MQ_TIMEOUT": 3600,
     "MQ_QUEUE": "indexqueue"
