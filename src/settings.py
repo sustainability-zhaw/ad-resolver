@@ -6,7 +6,7 @@ _settings = {
     "AD_HOST": os.getenv("AD_HOST", "zhaw.ch"),
     "AD_USER": os.getenv("AD_USER"),
     "AD_PASS": os.getenv("AD_PASS"),
-    "LOG_LEVEL": os.getenv("LOG_LEVEL", " DEBUG"),
+    "LOG_LEVEL": os.getenv("LOG_LEVEL", "ERROR"),
     "MQ_HOST": "mq",
     "MQ_EXCHANGE": "zhaw-km",
     "MQ_BINDKEYS": ["importer.object"],
