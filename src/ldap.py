@@ -1,4 +1,4 @@
-from ldap3 import Server, Connection, SAFE_SYNC
+from ldap3 import Server, Connection, SAFE_RESTARTABLE
 from ldap3.utils.conv import escape_filter_chars
 import settings
 
@@ -26,7 +26,7 @@ def connect():
         user=settings.AD_USER,
         password=settings.AD_PASS,
         auto_bind=True, 
-        client_strategy=SAFE_SYNC
+        client_strategy=SAFE_RESTARTABLE
     )
     return connected()
 
