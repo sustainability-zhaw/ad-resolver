@@ -3,35 +3,16 @@ from ldap3.utils.conv import escape_filter_chars
 import settings
 
 
-_connection = None
+_connection = Connection(
+    server=Server(settings.AD_HOST),
+    user=settings.AD_USER,
+    password=settings.AD_PASS,
+    auto_bind=True, 
+    client_strategy=SAFE_RESTARTABLE,
+    lazy=True
+)
 
 
-def connected():
-    global _connection
-    return _connection != None and _connection.bound
-
-
-def requires_connection(func):
-    def check_connection(*args, **kwargs):
-        if not connected():
-            raise Exception("Not connected to active directory. Did you forget to call connect()?")
-        return func(*args, **kwargs)
-    return check_connection
-
-
-def connect():
-    global _connection
-    _connection = Connection(
-        server=Server(settings.AD_HOST),
-        user=settings.AD_USER,
-        password=settings.AD_PASS,
-        auto_bind=True, 
-        client_strategy=SAFE_RESTARTABLE
-    )
-    return connected()
-
-
-@requires_connection
 def find_person_by_surename_and_given_name(surname, given_name):
     global _connection
     _, _, response, _ = _connection.search(
@@ -46,7 +27,6 @@ def find_person_by_surename_and_given_name(surname, given_name):
     return response
     
 
-@requires_connection
 def find_person_by_dn(dn):
     global _connection
     _, _, response, _ = _connection.search(

@@ -49,6 +49,4 @@ def resolve_authors(link):
 
 
 def run(routing_key, body):
-    if not ldap.connected():
-        ldap.connect()
     return resolve_authors(body["link"])

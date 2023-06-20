@@ -20,6 +20,7 @@ def consume_handler(ch, method, properties, body):
         if resolved_any_author:
             ch.basic_publish(exchange=settings.MQ_EXCHANGE, routing_key="importer.person", body=body)
     except:
+        logging.getLogger("ad_resolver").exception('An unexpected error occured while resolving authors.')
         ch.basic_nack(method.delivery_tag)
 
 
