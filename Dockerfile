@@ -1,4 +1,4 @@
-FROM python:3.11.1-slim-bullseye
+FROM python:3.11.4-slim-bullseye
 
 RUN groupadd -r app && \
     useradd --no-log-init -r -m -g app app
