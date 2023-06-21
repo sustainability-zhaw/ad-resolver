@@ -41,10 +41,10 @@ def resolve_author(author):
 def resolve_authors(link):
     has_resolved_any_author = False
     authors = db.query_authors_by_info_object_link(link)
-    for author in authors:
-        if not author["ad_check"]:
-            success = resolve_author(author)
-            has_resolved_any_author = success or has_resolved_any_author
+    unchecked_authors = [author for author in authors if not author["ad_check"]]
+    for author in unchecked_authors:
+        success = resolve_author(author)
+        has_resolved_any_author = success or has_resolved_any_author
     return has_resolved_any_author
 
 
