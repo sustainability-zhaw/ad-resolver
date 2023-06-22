@@ -19,46 +19,59 @@ def consume_handler(ch, method, properties, body):
     if resolved_any_author:
         ch.basic_publish(exchange=settings.MQ_EXCHANGE, routing_key="importer.person", body=body)
 
+        if resolved_any_author:
+            ch.basic_publish(exchange=settings.MQ_EXCHANGE, routing_key="importer.person", body=body)
+    except:
+        logging.getLogger("ad_resolver").exception(f'An unexpected error occured while resolving authors. {body}')
+        ch.basic_nack(method.delivery_tag)
 
 
 def main():
     logging.basicConfig(format="%(levelname)s: %(name)s: %(asctime)s: %(message)s", level=settings.LOG_LEVEL)
     logger = logging.getLogger("ad_resolver")
 
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=settings.MQ_HOST,
-                                  heartbeat=settings.MQ_HEARTBEAT,
-                                  blocked_connection_timeout=settings.MQ_TIMEOUT))
+    while True:
+        try:
+            connection = pika.BlockingConnection(
+                pika.ConnectionParameters(
+                    host=settings.MQ_HOST,
+                    heartbeat=settings.MQ_HEARTBEAT,
+                    blocked_connection_timeout=settings.MQ_TIMEOUT
+                )
+            )
 
-    channel = connection.channel()
+            channel = connection.channel()
+            channel.exchange_declare(exchange=settings.MQ_EXCHANGE, exchange_type="topic")
+            result = channel.queue_declare(settings.MQ_QUEUE, exclusive=False)
+            queue_name = result.method.queue
+        
+            for binding_key in settings.MQ_BINDKEYS:
+                channel.queue_bind(
+                    exchange=settings.MQ_EXCHANGE, 
+                    queue=queue_name, 
+                    routing_key=binding_key
+                )
 
-    channel.exchange_declare(exchange=settings.MQ_EXCHANGE, exchange_type="topic")
+            # switch message round-robin assignment to ready processes first
+            # Force service to handle one message at the time!
+            channel.basic_qos(prefetch_count=1) 
 
-    result = channel.queue_declare(settings.MQ_QUEUE, exclusive=False)
+            # register consuming function as callback
+            channel.basic_consume(
+                queue=queue_name, 
+                on_message_callback=consume_handler
+            )
 
-    queue_name = result.method.queue
-   
-    for binding_key in settings.MQ_BINDKEYS:
-        channel.queue_bind(
-            exchange=settings.MQ_EXCHANGE, 
-            queue=queue_name, 
-            routing_key=binding_key)
-
-    # switch message round-robin assignment to ready processes first
-    # Force service to handle one message at the time!
-    channel.basic_qos(prefetch_count=1) 
-
-    # register consuming function as callback
-    channel.basic_consume(
-        queue=queue_name, 
-        on_message_callback=consume_handler)
-
-    try:
-        channel.start_consuming()
-    except KeyboardInterrupt:
-        channel.stop_consuming()
-
-    connection.close()
+            channel.start_consuming()
+        # Don't recover if connection was closed by broker
+        except pika.exceptions.ConnectionClosedByBroker:
+            break
+        # Don't recover on channel errors
+        except pika.exceptions.AMQPChannelError:
+            break
+        # Recover on all other connection errors
+        except pika.exceptions.AMQPConnectionError:
+            continue
 
 
 if __name__ == "__main__":
