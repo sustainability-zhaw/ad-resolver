@@ -15,7 +15,6 @@ _connection = Connection(
 
 
 def find_person_by_surename_and_given_name(surname, given_name):
-    global _connection
     _, _, response, _ = _connection.search(
         search_base="OU=Staff,OU=AUM,DC=zhaw,DC=ch",
         search_filter="(&(objectclass=person)(objectclass=user)(objectclass=organizationalPerson)(sn={})(givenName={}))".format(
@@ -29,7 +28,6 @@ def find_person_by_surename_and_given_name(surname, given_name):
     
 
 def find_person_by_dn(dn):
-    global _connection
     _, _, response, _ = _connection.search(
         search_base="OU=Staff,OU=AUM,DC=zhaw,DC=ch",
         search_filter="(&(objectclass=person)(objectclass=user)(objectclass=organizationalPerson)(distinguishedName={}))".forrmat(
