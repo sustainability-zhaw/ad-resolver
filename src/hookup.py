@@ -41,21 +41,12 @@ def resolve_author(author):
 def resolve_authors(link):
     has_resolved_any_author = False
     authors = db.query_authors_by_info_object_link(link)
-    for author in authors:
-        if not author["ad_check"]:
-            try:
-                success = resolve_author(author)
-                has_resolved_any_author = success or has_resolved_any_author
-            except Exception as e:
-                logger.exception(f"Failed to resolve author {author['fullname']}")
+    unchecked_authors = [author for author in authors if not author["ad_check"]]
+    for author in unchecked_authors:
+        success = resolve_author(author)
+        has_resolved_any_author = success or has_resolved_any_author
     return has_resolved_any_author
 
 
 def run(routing_key, body):
-    try:
-        if not ldap.connected():
-            ldap.connect()
-        return resolve_authors(body["link"])
-    except:
-        logger.exception('Unhandled exception')
-    return False
+    return resolve_authors(body["link"])
