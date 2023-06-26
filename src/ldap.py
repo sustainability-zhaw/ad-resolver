@@ -4,13 +4,13 @@ import settings
 
 
 _connection = Connection(
-    server=Server(settings.AD_HOST, connect_timeout=10),
+    server=Server(settings.AD_HOST, connect_timeout=30),
     user=settings.AD_USER,
     password=settings.AD_PASS,
     auto_bind=True, 
     client_strategy=SAFE_RESTARTABLE,
     lazy=True,
-    receive_timeout=10
+    receive_timeout=30
 )
 
 
