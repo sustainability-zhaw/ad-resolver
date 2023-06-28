@@ -23,6 +23,7 @@ def consume_handler(ch, method, properties, body):
         logging.getLogger("ad_resolver").exception('An unexpected error occured while resolving authors.')
         ch.basic_nack(method.delivery_tag)
 
+
 def main():
     logging.basicConfig(format="%(levelname)s: %(name)s: %(asctime)s: %(message)s", level=settings.LOG_LEVEL)
     logger = logging.getLogger("ad_resolver")
