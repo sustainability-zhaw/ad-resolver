@@ -142,3 +142,4 @@ dmypy.json
 .ionide
 
 /secretes.json
+.DS_Store
