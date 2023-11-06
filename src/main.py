@@ -33,19 +33,17 @@ def main():
             pika.ConnectionParameters(
                 host=settings.MQ_HOST,
                 heartbeat=settings.MQ_HEARTBEAT,
-                blocked_connection_timeout=settings.MQ_TIMEOUT
+                blocked_connection_timeout=settings.MQ_TIMEOUT,
+                credentials=pika.PlainCredentials(settings.MQ_USER, settings.MQ_PASS)
             )
         )
 
         channel = connection.channel()
-        channel.exchange_declare(exchange=settings.MQ_EXCHANGE, exchange_type="topic")
-        result = channel.queue_declare(settings.MQ_QUEUE, exclusive=False)
-        queue_name = result.method.queue
 
         for binding_key in settings.MQ_BINDKEYS:
             channel.queue_bind(
                 exchange=settings.MQ_EXCHANGE,
-                queue=queue_name,
+                queue=settings.MQ_QUEUE,
                 routing_key=binding_key
             )
 
@@ -55,7 +53,7 @@ def main():
 
         # register consuming function as callback
         channel.basic_consume(
-            queue=queue_name,
+            queue=settings.MQ_QUEUE,
             on_message_callback=consume_handler
         )
 

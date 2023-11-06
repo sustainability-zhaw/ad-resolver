@@ -12,7 +12,9 @@ _settings = {
     "MQ_BINDKEYS": ["importer.object"],
     "MQ_HEARTBEAT": 6000,
     "MQ_TIMEOUT": 3600,
-    "MQ_QUEUE": "directoryqueue"
+    "MQ_QUEUE": "directoryqueue",
+    "MQ_USER": "ad-resolver",
+    "MQ_PASS": "guest"
 }
 
 if os.path.exists("/etc/app/secrets.json"):
@@ -33,3 +35,5 @@ MQ_BINDKEYS = _settings["MQ_BINDKEYS"]
 MQ_HEARTBEAT = _settings["MQ_HEARTBEAT"]
 MQ_TIMEOUT = _settings["MQ_TIMEOUT"]
 MQ_QUEUE = _settings["MQ_QUEUE"]
+MQ_USER = _settings["MQ_USER"]
+MQ_PASS = _settings["MQ_PASS"]
