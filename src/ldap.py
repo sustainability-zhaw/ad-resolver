@@ -1,6 +1,6 @@
 from ldap3 import Server, Connection, SAFE_RESTARTABLE
 from ldap3.utils.conv import escape_filter_chars
-import settings
+from settings import settings
 
 
 _connection = Connection(

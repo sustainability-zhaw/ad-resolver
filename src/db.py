@@ -1,6 +1,6 @@
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
-import settings
+from settings import settings
 
 
 _client = Client(

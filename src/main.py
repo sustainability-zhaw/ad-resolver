@@ -2,9 +2,13 @@ import logging
 import json
 import pika
 
-import settings
+from settings import settings
 import hookup
 
+settings.load([
+    "/etc/app/config.json", 
+    "/etc/app/secrets.json"
+])
 
 def consume_handler(ch, method, properties, body):
     """
