@@ -1,5 +1,5 @@
 import unittest
-from utils import build_full_name_variations
+from src.utils import build_full_name_variations
 
 class TestBuildFullNameVariations(unittest.TestCase):
 
