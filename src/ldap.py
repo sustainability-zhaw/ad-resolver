@@ -4,7 +4,7 @@ from settings import settings
 
 
 _connection = Connection(
-    server=Server(settings.AD_HOST, connect_timeout=30),
+    server=Server(settings.AD_HOST, connect_timeout=30, use_ssl = True),
     user=settings.AD_USER,
     password=settings.AD_PASS,
     auto_bind=True, 
