@@ -2,7 +2,8 @@ from ldap3 import Server, Connection, SAFE_RESTARTABLE
 from ldap3.utils.conv import escape_filter_chars
 from settings import settings
 
-use_sec = False
+# insecure connections must be explicitly switched off. 
+use_sec = True
 if "AD_SECURE" in settings.keys() and type(settings.AD_SECURE) == str:
     use_sec = settings.AD_SECURE.lower() == "true"
     
