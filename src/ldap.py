@@ -2,9 +2,12 @@ from ldap3 import Server, Connection, SAFE_RESTARTABLE
 from ldap3.utils.conv import escape_filter_chars
 from settings import settings
 
-
-_connection = Connection(
-    server=Server(settings.AD_HOST, connect_timeout=30, use_ssl = True),
+use_sec = False
+if "AD_SECURE" in settings.keys() and type(settings.AD_SECURE) == str:
+    use_sec = settings.AD_SECURE.lower() == "true"
+    
+_connection = Connection(        
+    server=Server(settings.AD_HOST, connect_timeout=30, use_ssl = use_sec),
     user=settings.AD_USER,
     password=settings.AD_PASS,
     auto_bind=True, 
